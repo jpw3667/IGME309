@@ -1,4 +1,6 @@
 #include "MyMesh.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 void MyMesh::GenerateCube(float a_fSize, vector3 a_v3Color)
 {
 	if (a_fSize < 0.01f)
@@ -61,7 +63,30 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		float p1 = cos(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius;
+		float p2 = sin(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius;
+		float p3 = cos(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius;
+		float p4 = sin(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius;
+
+
+		AddTri(vector3(0.0f, 0.0f, 0.0f),
+			vector3(p1, p2, 0.0f),
+			vector3(p3, p4, 0.0f));
+
+		AddTri(vector3(0.0f, 0.0f, 0.0f),
+			vector3(p3, p4, 0.0f),
+			vector3(p1, p2, 0.0f));
+
+		AddTri(vector3(0.0f, 0.0f, a_fHeight),
+			vector3(p1, p2, 0.0f),
+			vector3(p3, p4, 0.0f));
+
+		AddTri(vector3(0.0f, 0.0f, a_fHeight),
+			vector3(p3, p4, 0.0f),
+			vector3(p1, p2, 0.0f));
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -85,7 +110,38 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		float p1 = cos(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius;
+		float p2 = sin(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius;;
+		float p3 = cos(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius;
+		float p4 = sin(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius;
+
+
+		AddTri(vector3(0.0f, 0.0f, 0.0f),
+			vector3(p1, p2, 0.0f),
+			vector3(p3, p4, 0.0f));
+
+		AddTri(vector3(0.0f, 0.0f, 0.0f),
+			vector3(p3, p4, 0.0f),
+			vector3(p1, p2, 0.0f));
+
+		AddTri(vector3(0.0f, 0.0f, a_fHeight),
+			vector3(p1, p2, a_fHeight),
+			vector3(p3, p4, a_fHeight));
+
+		AddTri(vector3(0.0f, 0.0f, a_fHeight),
+			vector3(p3, p4, a_fHeight),
+			vector3(p1, p2, a_fHeight));
+
+		AddQuad(vector3(p1, p2, 0),
+			vector3(p3, p4, 0),
+			vector3(p1, p2, a_fHeight),
+			vector3(p3, p4, a_fHeight));
+	}
+
 	// -------------------------------
 
 	// Adding information about color
@@ -115,8 +171,36 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		float p1 = cos(360.0f / a_nSubdivisions * i * (M_PI / 180.0f));
+		float p2 = sin(360.0f / a_nSubdivisions * i * (M_PI / 180.0f));
+		float p3 = cos(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f));
+		float p4 = sin(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f));
+
+
+		AddQuad(vector3(p1 * a_fInnerRadius, p2 * a_fInnerRadius, 0.0f),
+			vector3(p3 * a_fInnerRadius, p4 * a_fInnerRadius, 0.0f),
+			vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, 0.0f),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, 0.0f));
+
+
+		AddQuad(vector3(p3 * a_fInnerRadius, p4 * a_fInnerRadius, 1.0f),
+			vector3(p1 * a_fInnerRadius, p2 * a_fInnerRadius, a_fHeight),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, a_fHeight),
+			vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, a_fHeight));
+
+		AddQuad(vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, 0),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, 0),
+			vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, a_fHeight),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, a_fHeight));
+
+		AddQuad(vector3(p2 * a_fInnerRadius, p1 * a_fInnerRadius, 0),
+			vector3(p4 * a_fInnerRadius, p3 * a_fInnerRadius, 0),
+			vector3(p2 * a_fInnerRadius, p1 * a_fInnerRadius, a_fHeight),
+			vector3(p4 * a_fInnerRadius, p3 * a_fInnerRadius, a_fHeight));
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -145,9 +229,37 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 
 	Release();
 	Init();
-
+	int a_nSubdivisions = a_nSubdivisionsA;
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	for (int i = 0; i < a_nSubdivisionsA; i++)
+	{
+		float p1 = cos(360.0f / a_nSubdivisions * i * (M_PI / 180.0f));
+		float p2 = sin(360.0f / a_nSubdivisions * i * (M_PI / 180.0f));
+		float p3 = cos(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f));
+		float p4 = sin(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f));
+
+
+		AddQuad(vector3(p1 * a_fInnerRadius, p2 * a_fInnerRadius, 0.0f),
+			vector3(p3 * a_fInnerRadius, p4 * a_fInnerRadius, 0.0f),
+			vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, 0.0f),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, 0.0f));
+
+
+		AddQuad(vector3(p3 * a_fInnerRadius, p4 * a_fInnerRadius, 0.2f),
+			vector3(p1 * a_fInnerRadius, p2 * a_fInnerRadius, 0.2f),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, 0.2f),
+			vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, 0.2f));
+
+		AddQuad(vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, 0),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, 0),
+			vector3(p1 * a_fOuterRadius, p2 * a_fOuterRadius, 0.2f),
+			vector3(p3 * a_fOuterRadius, p4 * a_fOuterRadius, 0.2f));
+
+		AddQuad(vector3(p2 * a_fInnerRadius, p1 * a_fInnerRadius, 0),
+			vector3(p4 * a_fInnerRadius, p3 * a_fInnerRadius, 0),
+			vector3(p2 * a_fInnerRadius, p1 * a_fInnerRadius, 0.2f),
+			vector3(p4 * a_fInnerRadius, p3 * a_fInnerRadius, 0.2f));
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -172,7 +284,56 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		float p1 = cos(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+		float p2 = sin(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+		float p3 = cos(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+		float p4 = sin(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+
+
+		AddTri(vector3(0.0f, 0.0f, 0.1f),
+			vector3(p1, p2, 0.2f),
+			vector3(p3, p4, 0.2f));
+
+		AddTri(vector3(0.0f, 0.0f, 0.1f),
+			vector3(p3, p4, 0.2f),
+			vector3(p1, p2, 0.2f));
+
+		AddTri(vector3(0.0f, 0.0f, 0.9f),
+			vector3(p1, p2, 0.8f),
+			vector3(p3, p4, 0.8f));
+
+		AddTri(vector3(0.0f, 0.0f, 0.9f),
+			vector3(p3, p4, 0.8f),
+			vector3(p1, p2, 0.8f));
+	}
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		float p1 = cos(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+		float p2 = sin(360.0f / a_nSubdivisions * i * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+		float p3 = cos(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+		float p4 = sin(360.0f / a_nSubdivisions * (i + 1) * (M_PI / 180.0f)) * a_fRadius / 2.0f;
+
+		AddQuad(vector3(p1, p2, 0.2),
+			vector3(p3, p4, 0.2),
+			vector3(p1 * 1.8f, p2 * 1.8f, 0.4f),
+			vector3(p3 * 1.8f, p4 * 1.8f, 0.4f));
+
+		AddQuad(vector3(p1 * 1.8f, p2 * 1.8f, 0.4f),
+			vector3(p3 * 1.8f, p4 * 1.8f, 0.4f),
+			vector3(p1 * 1.8f, p2 * 1.8f, 0.6f),
+			vector3(p3 * 1.8f, p4 * 1.8f, 0.6f));
+
+		AddQuad(vector3(p1 * 1.8f, p2 * 1.8f, 0.6f),
+			vector3(p3 * 1.8f, p4 * 1.8f, 0.6f),
+			vector3(p1, p2, 0.8f),
+			vector3(p3, p4, 0.8f));
+
+	}
 	// -------------------------------
 
 	// Adding information about color
