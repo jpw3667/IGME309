@@ -63,8 +63,6 @@ void Application::Display(void)
 		break;
 	case 3:
 		m_pCamera->ResetCamera();
-		//m_pCamera->SetPosition(vector3(30.0f, 0.0f, 0.0f));
-		//m_pCamera->SetUp(vector3(0.0f, 0.0f, -1.0f));
 		m_pCamera->SetPosition(vector3(30.0f, 0.0f, 0.0f));
 		m_pCamera->SetUp(vector3(0.0f, 0.0f, -1.0f));
 		break;
