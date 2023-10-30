@@ -5,6 +5,42 @@ void MyCamera::SetPositionTargetAndUpward(vector3 a_v3Position, vector3 a_v3Targ
 {
 	//TODO:: replace the super call with your functionality
 	//Tip: Changing any positional vector forces you to calculate new directional ones
+	//super::SetPositionTargetAndUpward(m_v3Position, m_v3Target, m_v3Upward);
+
+	//m_m4Projection[3][0] = a_v3Position[0];
+	//m_m4Projection[3][1] = a_v3Position[1];
+	//m_m4Projection[3][2] = a_v3Position[2];//Projection Matrix
+	std::cout << m_m4Projection[0][0] << ",";
+	std::cout << m_m4Projection[0][1] << ",";
+	std::cout << m_m4Projection[0][2] << ",";
+	std::cout << m_m4Projection[0][3] << "," << "\n";
+	std::cout << m_m4Projection[1][0] << ",";
+	std::cout << m_m4Projection[1][1] << ",";
+	std::cout << m_m4Projection[1][2] << ",";
+	std::cout << m_m4Projection[1][3] << "," << "\n";
+	std::cout << m_m4Projection[2][0] << ",";
+	std::cout << m_m4Projection[2][1] << ",";
+	std::cout << m_m4Projection[2][2] << ",";
+	std::cout << m_m4Projection[2][3] << "," << "\n";
+	std::cout << m_m4Projection[3][0] << ",";
+	std::cout << m_m4Projection[3][1] << ",";
+	std::cout << m_m4Projection[3][2] << ",";
+	std::cout << m_m4Projection[3][3] << "," << "\n\n";
+
+	std::cout << a_v3Position[0] << ",";
+	std::cout << a_v3Position[1] << ",";
+	std::cout << a_v3Position[2] << "," << "\n";
+
+	std::cout << a_v3Target[0] << ",";
+	std::cout << a_v3Target[1] << ",";
+	std::cout << a_v3Target[2] << "," << "\n";
+
+	std::cout << a_v3Upward[0] << ",";
+	std::cout << a_v3Upward[1] << ",";
+	std::cout << a_v3Upward[2] << "," << "\n";
+
+	m_m4View = matrix4(1.0f); //View matrix
+
 	super::SetPositionTargetAndUpward(a_v3Position, a_v3Target, a_v3Upward);
 
 	//After changing any vectors you need to recalculate the MyCamera View matrix.
@@ -21,12 +57,18 @@ void MyCamera::MoveForward(float a_fDistance)
 	//		 in the _Binary folder you will notice that we are moving 
 	//		 backwards and we never get closer to the plane as we should 
 	//		 because as we are looking directly at it.
-	m_v3Position += vector3(0.0f, 0.0f, a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, a_fDistance);
+	m_v3Position += vector3(0.0f, 0.0f, -a_fDistance);
+	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
+
+	std::cout << m_v3Position[0] << ",";
+	std::cout << m_v3Position[1] << ",";
+	std::cout << m_v3Position[2] << "," << "\n";
 }
 void MyCamera::MoveVertical(float a_fDistance)
 {
 	//Tip:: Look at MoveForward
+	m_v3Position += m_v3Upward * a_fDistance;
+	m_v3Target += m_v3Upward * a_fDistance;
 }
 void MyCamera::MoveSideways(float a_fDistance)
 {
@@ -40,7 +82,13 @@ void MyCamera::CalculateView(void)
 	//		 it will receive information from the main code on how much these orientations
 	//		 have change so you only need to focus on the directional and positional 
 	//		 vectors. There is no need to calculate any right click process or connections.
+	//m_v3Target[0] = m_v3PitchYawRoll[1];
+	//m_v3Target[1] = m_v3PitchYawRoll[0];
 	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Upward);
+
+	std::cout << m_v3PitchYawRoll[0] << ",";
+	std::cout << m_v3PitchYawRoll[1] << ",";
+	std::cout << m_v3PitchYawRoll[2] << "," << "\n";
 }
 //You can assume that the code below does not need changes unless you expand the functionality
 //of the class or create helper methods, etc.
