@@ -6,23 +6,75 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	//TODO: Calculate the SAT algorithm I STRONGLY suggest you use the
 	//Real Time Collision detection algorithm for OBB here but feel free to
 	//implement your own solution.
+	
+
+	//Create both the lists for the main axes
+	std::vector<vector3> thisAxesList = std::vector<vector3>();
+	std::vector<vector3> otherAxesList = std::vector<vector3>();
+
+	//Rotation matrix
+	matrix4 rMatrix;
+
+	//std::vector<vector3> crossProducts = std::vector<vector3>();
+	//crossProducts.push_back(glm::cross(thisAxesList[i], otherAxesList[j]));
+
+	//Translation vector
+	vector3 translation;
+
+	//Find the axes and add them to the lists
+	thisAxesList.push_back(this->GetModelMatrix()[0]);
+	thisAxesList.push_back(this->GetModelMatrix()[1]);
+	thisAxesList.push_back(this->GetModelMatrix()[2]);
+	otherAxesList.push_back(a_pOther->GetModelMatrix()[0]);
+	otherAxesList.push_back(a_pOther->GetModelMatrix()[1]);
+	otherAxesList.push_back(a_pOther->GetModelMatrix()[2]);
+
+	//Calculate rotation matrix 
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			rMatrix[i][j] = glm::dot(thisAxesList[i], otherAxesList[j]);
+		}
+	}
+
+	//Find the translation vector and put it into the current coordinate form
+	translation = a_pOther->GetCenterGlobal() - this->GetCenterGlobal();
+	translation = vector3(glm::dot(translation, thisAxesList[0]), glm::dot(translation, thisAxesList[1]), glm::dot(translation, thisAxesList[2]));
+
+	
+
+
+	//The main three axes of this
+	for (int i = 0; i < 3; i++)
+	{
+		//I'm completely stuck here
+	}
+
+	//return 0 for no collision
 	return BTXs::eSATResults::SAT_NONE;
 }
 bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 {
 	//check if spheres are colliding
-	bool bColliding = true;
+	bool bColliding = glm::distance(GetCenterGlobal(), a_pOther->GetCenterGlobal()) < m_fRadius + a_pOther->m_fRadius;
 	/*
 	* We use Bounding Spheres or ARBB as a pre-test to avoid expensive calculations (SAT)
 	* we default bColliding to true here to always fall in the need of calculating
 	* SAT for the sake of the assignment.
 	*/
+	//Set bColliding to true if the distance from the centers is less than both the radii added up.
+
 	if (bColliding) //they are colliding with bounding sphere
 	{
+		
 		uint nResult = SAT(a_pOther);
+		if (nResult != 0)
+			bColliding = false;
 
 		if (bColliding) //The SAT shown they are colliding
 		{
+			std::cout << "COLLIDING";
 			this->AddCollisionWith(a_pOther);
 			a_pOther->AddCollisionWith(this);
 		}
@@ -266,6 +318,7 @@ void MyRigidBody::ClearCollidingList(void)
 
 void MyRigidBody::AddToRenderList(void)
 {
+	//m_pModelMngr->AddWireSphereToRenderList(glm::translate(m_m4ToWorld, GetCenterGlobal()) * glm::scale(vector3(m_fRadius)), C_BLUE_CORNFLOWER);
 	if (m_bVisibleBS)
 	{
 		if (m_CollidingRBSet.size() > 0)
